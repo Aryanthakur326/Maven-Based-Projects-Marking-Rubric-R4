@@ -1,0 +1,153 @@
+//Code Quality and Innovative Features
+//Code with High-Quality Design and Innovative Features
+
+import java.util.*;
+
+class User {
+    private String username;
+    private int stepsWalked;
+    private int caloriesBurned;
+    private int workoutDuration;
+
+    public User(String username) {
+        this.username = username;
+        this.stepsWalked = 0;
+        this.caloriesBurned = 0;
+        this.workoutDuration = 0;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void logWorkout(int steps, int calories, int duration) {
+        this.stepsWalked += steps;
+        this.caloriesBurned += calories;
+        this.workoutDuration += duration;
+    }
+
+    public void displayProgress() {
+        System.out.println("User: " + username);
+        System.out.println("Steps Walked: " + stepsWalked);
+        System.out.println("Calories Burned: " + caloriesBurned);
+        System.out.println("Workout Duration: " + workoutDuration + " minutes");
+    }
+}
+
+class FitnessTracker {
+    private Map<String, User> users = new HashMap<>();
+
+    public void registerUser(String username) {
+        if (!users.containsKey(username)) {
+            users.put(username, new User(username));
+            System.out.println("User " + username + " registered successfully.");
+        } else {
+            System.out.println("Username already taken.");
+        }
+    }
+
+    public User getUser(String username) {
+        return users.get(username);
+    }
+
+    public void displayMenu() {
+        System.out.println("Welcome to Fitness Tracker");
+        System.out.println("1. Register");
+        System.out.println("2. Log Workout");
+        System.out.println("3. View Progress");
+        System.out.println("4. Exit");
+    }
+
+    public void logWorkoutForUser(String username, int steps, int calories, int duration) {
+        User user = users.get(username);
+        if (user != null) {
+            user.logWorkout(steps, calories, duration);
+            System.out.println("Workout logged successfully.");
+        } else {
+            System.out.println("User not found.");
+        }
+    }
+}
+
+public class FitnessApp {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        FitnessTracker tracker = new FitnessTracker();
+
+        while (true) {
+            tracker.displayMenu();
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter username to register: ");
+                    String username = scanner.nextLine();
+                    tracker.registerUser(username);
+                    break;
+                case 2:
+                    System.out.print("Enter username to log workout: ");
+                    String userForWorkout = scanner.nextLine();
+                    System.out.print("Enter steps: ");
+                    int steps = scanner.nextInt();
+                    System.out.print("Enter calories burned: ");
+                    int calories = scanner.nextInt();
+                    System.out.print("Enter workout duration (in minutes): ");
+                    int duration = scanner.nextInt();
+                    tracker.logWorkoutForUser(userForWorkout, steps, calories, duration);
+                    break;
+                case 3:
+                    System.out.print("Enter username to view progress: ");
+                    String userForProgress = scanner.nextLine();
+                    User user = tracker.getUser(userForProgress);
+                    if (user != null) {
+                        user.displayProgress();
+                    } else {
+                        System.out.println("User not found.");
+                    }
+                    break;
+                case 4:
+                    System.out.println("Goodbye!");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid option, try again.");
+            }
+        }
+    }
+}
+
+//Commenting and Documentation
+//Commenting the Code
+
+// This class represents a user in the fitness tracker system
+class User {
+    private String username; // User's unique username
+    private int stepsWalked; // Total steps walked by the user
+    private int caloriesBurned; // Total calories burned during workouts
+    private int workoutDuration; // Total time spent on workouts
+
+    // Constructor to initialize user with username
+    public User(String username) {
+        this.username = username;
+        this.stepsWalked = 0;
+        this.caloriesBurned = 0;
+        this.workoutDuration = 0;
+    }
+
+    // Method to log a new workout (steps, calories, and duration)
+    public void logWorkout(int steps, int calories, int duration) {
+        this.stepsWalked += steps; // Add steps to the total count
+        this.caloriesBurned += calories; // Add calories to the total count
+        this.workoutDuration += duration; // Add workout duration
+    }
+
+    // Method to display the user's workout progress
+    public void displayProgress() {
+        System.out.println("User: " + username);
+        System.out.println("Steps Walked: " + stepsWalked);
+        System.out.println("Calories Burned: " + caloriesBurned);
+        System.out.println("Workout Duration: " + workoutDuration + " minutes");
+    }
+}
+
