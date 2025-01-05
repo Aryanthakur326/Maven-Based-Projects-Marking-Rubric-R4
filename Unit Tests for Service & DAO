@@ -1,0 +1,51 @@
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class UserServiceTest {
+
+    private UserService userService;
+    private UserDAO mockUserDAO;
+
+    @BeforeEach
+    public void setUp() {
+        mockUserDAO = mock(UserDAO.class);
+        userService = new UserService(mockUserDAO);
+    }
+
+    @Test
+    public void testRegisterUser_Success() {
+        User newUser = new User("john_doe", "john@example.com");
+
+        when(mockUserDAO.findByUsername("john_doe")).thenReturn(null); // No existing user
+
+        boolean result = userService.registerUser(newUser);
+
+        assertTrue(result, "User should be registered successfully");
+        verify(mockUserDAO, times(1)).save(newUser); // Verify save was called once
+    }
+
+    @Test
+    public void testRegisterUser_UsernameExists() {
+        User existingUser = new User("john_doe", "john@example.com");
+
+        when(mockUserDAO.findByUsername("john_doe")).thenReturn(existingUser); // User already exists
+
+        boolean result = userService.registerUser(existingUser);
+
+        assertFalse(result, "User should not be registered with an existing username");
+    }
+
+    @Test
+    public void testLoginUser_Success() {
+        User existingUser = new User("john_doe", "john@example.com");
+
+        when(mockUserDAO.findByUsername("john_doe")).thenReturn(existingUser);
+
+        User loggedInUser = userService.loginUser("john_doe");
+
+        assertNotNull(loggedInUser, "User should be found");
+        assertEquals("john_doe", loggedInUser.getUsername(), "Usernames should match");
+    }
+}
