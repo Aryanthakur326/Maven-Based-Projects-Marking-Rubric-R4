@@ -1,0 +1,149 @@
+//Data Validation 
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TextField;
+import javafx.scene.control.PasswordField;
+
+public class UserRegistrationController {
+
+    private TextField usernameField;
+    private TextField emailField;
+    private PasswordField passwordField;
+
+    public UserRegistrationController(TextField username, TextField email, PasswordField password) {
+        this.usernameField = username;
+        this.emailField = email;
+        this.passwordField = password;
+    }
+
+    // Method to validate form fields
+    public boolean validateInputs() {
+        String username = usernameField.getText();
+        String email = emailField.getText();
+        String password = passwordField.getText();
+
+        // Validate username (not empty and length)
+        if (username.isEmpty() || username.length() < 3) {
+            showAlert("Username is too short. It must be at least 3 characters long.");
+            return false;
+        }
+
+        // Validate email format using a simple regex
+        if (!email.matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$")) {
+            showAlert("Invalid email format.");
+            return false;
+        }
+
+        // Validate password (not empty and at least 6 characters)
+        if (password.isEmpty() || password.length() < 6) {
+            showAlert("Password must be at least 6 characters long.");
+            return false;
+        }
+
+        return true;
+    }
+
+    // Method to show alert messages
+    private void showAlert(String message) {
+        Alert alert = new Alert(AlertType.WARNING);
+        alert.setTitle("Input Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+}
+
+//Workout Data Validation
+
+public class WorkoutTrackerController {
+
+    private TextField durationField;
+    private TextField caloriesField;
+
+    public WorkoutTrackerController(TextField duration, TextField calories) {
+        this.durationField = duration;
+        this.caloriesField = calories;
+    }
+
+    // Method to validate workout data
+    public boolean validateWorkoutData() {
+        String durationText = durationField.getText();
+        String caloriesText = caloriesField.getText();
+
+        try {
+            int duration = Integer.parseInt(durationText);
+            int calories = Integer.parseInt(caloriesText);
+
+            if (duration <= 0 || calories <= 0) {
+                showAlert("Duration and calories must be positive numbers.");
+                return false;
+            }
+
+        } catch (NumberFormatException e) {
+            showAlert("Please enter valid numeric values for duration and calories.");
+            return false;
+        }
+
+        return true;
+    }
+
+    // Show alert method (same as above)
+    private void showAlert(String message) {
+        Alert alert = new Alert(AlertType.WARNING);
+        alert.setTitle("Input Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+}
+
+//Code Quality and Innovative Features 
+//Adding a Graph with JavaFX (JFreeChart)
+
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.stage.Stage;
+
+public class FitnessProgressChart extends Application {
+
+    @Override
+    public void start(Stage stage) {
+        // Create X and Y axes
+        NumberAxis xAxis = new NumberAxis();
+        NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Days");
+        yAxis.setLabel("Steps");
+
+        // Create a line chart
+        LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
+        lineChart.setTitle("Fitness Progress (Steps per Day)");
+
+        // Prepare data series
+        XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        series.setName("Steps");
+
+        // Add data points (example data)
+        series.getData().add(new XYChart.Data<>(1, 3000));
+        series.getData().add(new XYChart.Data<>(2, 3500));
+        series.getData().add(new XYChart.Data<>(3, 4000));
+        series.getData().add(new XYChart.Data<>(4, 4500));
+
+        // Add series to chart
+        lineChart.getData().add(series);
+
+        // Set up scene and stage
+        Scene scene = new Scene(lineChart, 800, 600);
+        stage.setScene(scene);
+        stage.setTitle("User Fitness Progress");
+        stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+
