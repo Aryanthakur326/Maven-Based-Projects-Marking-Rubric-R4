@@ -1,0 +1,16 @@
+public class UserDAO {
+
+    private final Map<String, User> userDatabase = new HashMap<>();
+
+    public boolean save(User user) {
+        if (userDatabase.containsKey(user.getUsername())) {
+            return false;
+        }
+        userDatabase.put(user.getUsername(), user);
+        return true;
+    }
+
+    public User findByUsername(String username) {
+        return userDatabase.get(username);
+    }
+}
