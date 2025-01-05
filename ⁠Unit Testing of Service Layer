@@ -1,0 +1,76 @@
+//Step 1: Add Test Dependencies in pom.xml
+
+<dependencies>
+    <!-- Spring Boot Test for integration/unit tests -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- Mockito for mocking dependencies in service layer -->
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>3.11.2</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+
+//Step 2: Write Unit Tests for the Service Layer
+
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.*;
+
+public class UserServiceTest {
+
+    @Mock
+    private UserDAO userDAO;
+
+    @InjectMocks
+    private UserService userService;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.initMocks(this); // Initialize Mockito annotations
+    }
+
+    @Test
+    public void testRegisterUser_Success() {
+        User newUser = new User("john_doe", "john@example.com");
+
+        when(userDAO.findByUsername("john_doe")).thenReturn(null); // No existing user
+
+        boolean result = userService.registerUser(newUser);
+
+        assertTrue(result, "User should be registered successfully");
+        verify(userDAO, times(1)).save(newUser); // Verify that save() is called
+    }
+
+    @Test
+    public void testRegisterUser_UsernameExists() {
+        User existingUser = new User("john_doe", "john@example.com");
+
+        when(userDAO.findByUsername("john_doe")).thenReturn(existingUser); // Username already exists
+
+        boolean result = userService.registerUser(existingUser);
+
+        assertFalse(result, "User should not be registered with an existing username");
+    }
+
+    @Test
+    public void testLoginUser_Success() {
+        User existingUser = new User("john_doe", "john@example.com");
+
+        when(userDAO.findByUsername("john_doe")).thenReturn(existingUser);
+
+        User loggedInUser = userService.loginUser("john_doe");
+
+        assertNotNull(loggedInUser, "User should be logged in successfully");
+        assertEquals("john_doe", loggedInUser.getUsername(), "Usernames should match");
+    }
+}
+
