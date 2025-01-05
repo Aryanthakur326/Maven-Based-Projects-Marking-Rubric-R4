@@ -1,0 +1,95 @@
+//Key Annotations in Spring Boot:
+
+@SpringBootApplication:
+@SpringBootApplication
+public class FitnessTrackerApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(FitnessTrackerApplication.class, args);
+    }
+}
+
+ 
+@RestController
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+    
+    @Autowired
+    private UserService userService;
+
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody User user) {
+        boolean isRegistered = userService.registerUser(user);
+        if (isRegistered) {
+            return ResponseEntity.status(HttpStatus.CREATED).body("User Registered Successfully");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
+    }
+
+    @GetMapping("/login/{username}")
+    public ResponseEntity<User> login(@PathVariable String username) {
+        User user = userService.loginUser(username);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+}
+
+
+@Service:
+@Service
+public class UserService {
+
+    @Autowired
+    private UserDAO userDAO;
+
+    public boolean registerUser(User user) {
+        if (userDAO.findByUsername(user.getUsername()) != null) {
+            return false; // Username exists
+        }
+        return userDAO.save(user);
+    }
+
+    public User loginUser(String username) {
+        return userDAO.findByUsername(username);
+    }
+}
+
+@Repository:
+@Repository
+public class UserDAO {
+
+    private final Map<String, User> userDatabase = new HashMap<>();
+
+    public boolean save(User user) {
+        if (userDatabase.containsKey(user.getUsername())) {
+            return false;
+        }
+        userDatabase.put(user.getUsername(), user);
+        return true;
+    }
+
+    public User findByUsername(String username) {
+        return userDatabase.get(username);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
