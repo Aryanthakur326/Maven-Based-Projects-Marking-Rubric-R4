@@ -1,0 +1,19 @@
+public class UserService {
+
+    private final UserDAO userDAO;
+
+    public UserService(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+
+    public boolean registerUser(User user) {
+        if (userDAO.findByUsername(user.getUsername()) != null) {
+            return false; // Username already exists
+        }
+        return userDAO.save(user);
+    }
+
+    public User loginUser(String username) {
+        return userDAO.findByUsername(username);
+    }
+}
